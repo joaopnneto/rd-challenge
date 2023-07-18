@@ -1,10 +1,19 @@
-# Ruby
 
-## Como rodar os testes
+### Dependencies
+- [Docker](https://docs.docker.com/get-docker/)
+- Ruby
 
-No terminal, execute os comandos:
+### Version
+- Ruby 2.6.10-alpine
 
+### Tests
+To run the unit tests, run the commands below:
+
+###### 1 - Build the Docker image:
+```bash
+$ docker-compose build
 ```
-cd ruby
-ruby customer_success_balancing.rb
+###### 2 - After, just run
+```bash
+$ docker-compose run challenge-rd
 ```
