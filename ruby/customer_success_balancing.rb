@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'minitest/autorun'
 require 'timeout'
 
@@ -6,13 +8,14 @@ class CustomerSuccessBalancing
     @customer_success = customer_success
     @customers = customers
     @away_customer_success = away_customer_success
-    @available_cs = available_cs
   end
 
   # Returns the ID of the customer success with most customers
   def execute
     # Write your solution here
-    busiest_cs(build_cs)
+    return 0 unless validate_params
+
+    busiest_cs(build_cs_data)
   end
 end
 
@@ -20,16 +23,16 @@ private
 
 def busiest_cs(params)
   return 0 if params.size.zero?
-  return 0 if draw(params)
+  return 0 if draw?(params)
   return params.first[:id] if params.size.eql? 1
 
   params.first[:count].zero? ? params.max_by { |value| value[:count] }[:id] : params.first[:id]
 end
 
-def build_cs
+def build_cs_data
   cs_count = Hash.new(0)
   customer_count = []
-  @available_cs.each do |cs|
+  available_cs.each do |cs|
     cs[:count] = 0
     @customers.each do |customer|
       if customer[:score] <= cs[:score] && !customer_count.include?(customer[:id])
@@ -46,29 +49,28 @@ def available_cs
                    .sort_by! { |cs| cs[:score] }
 end
 
-def draw(cs_params)
+def draw?(cs_params)
   draw_count = Hash.new(0)
   cs_params.each { |cs| draw_count[cs[:count]] += 1 }
   values = draw_count.values
   (values.first == values.last) && (values.first > 1 && values.last > 1)
 end
 
-# def validate_params
-#   binding.pry
-#   abstention && max_cs && max_customer
-# end
+def validate_params
+  abstention? && max_cs? && max_customer?
+end
 
-# def abstention
-#   @away_customer_success.size <= (@customer_success.size / 2).floor
-# end
+def abstention?
+  @away_customer_success.size <= (@customer_success.size / 2).floor
+end
 
-# def max_cs
-#   @customer_success.size < 1000
-# end
+def max_cs?
+  @customer_success.size > 1 && @customer_success.size < 1000
+end
 
-# def max_customer
-#   @customers.size < 1_000_000
-# end
+def max_customer?
+  @customers.size > 1 && @customers.size < 1_000_000
+end
 
 class CustomerSuccessBalancingTests < Minitest::Test
   def test_scenario_one
