@@ -1,0 +1,9 @@
+version: '3'
+services:
+  challenge-rd:
+    container_name: challenge-rd
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/challenge-rd
